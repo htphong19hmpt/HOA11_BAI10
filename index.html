@@ -1,0 +1,1067 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HÓA HỌC 10 - BÀI 10: QUY TẮC OCTET (40 CÂU)</title>
+    <script>
+        window.MathJax = {
+            startup: { typeset: false },
+            tex: {
+                inlineMath: [['$', '$']],
+                processEscapes: true
+            },
+            options: {
+                skipHtmlTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+            }
+        };
+    </script>
+    <script defer src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700;800&display=swap');
+        body { font-family: 'Montserrat', sans-serif; }
+        .pulse-glow { animation: pulseGlow 2s infinite; }
+        @keyframes pulseGlow {
+            0%, 100% { box-shadow: 0 0 15px rgba(59, 130, 246, 0.5); }
+            50% { box-shadow: 0 0 30px rgba(59, 130, 246, 0.8); }
+        }
+    </style>
+</head>
+<body class="bg-gradient-to-br from-indigo-900 via-purple-900 to-slate-900 min-h-screen text-white flex flex-col items-center justify-between p-4 md:p-8">
+
+    <!-- Header -->
+    <header class="w-full max-w-4xl text-center my-4">
+        <div class="inline-block bg-blue-600 text-xs font-bold uppercase tracking-widest px-3 py-1 rounded-full mb-2 shadow-lg">
+            Trò Chơi Học Tập - Hóa học 10
+        </div>
+        <h1 class="text-xl md:text-3xl font-extrabold bg-gradient-to-r from-teal-200 via-blue-200 to-purple-200 bg-clip-text text-transparent">
+            BÀI 10: QUY TẮC OCTET (40 CÂU)
+        </h1>
+        <p class="text-slate-300 text-sm md:text-base mt-1">Chương 3: Liên kết hóa học</p>
+    </header>
+
+    <!-- Main Container -->
+    <main class="w-full max-w-4xl bg-slate-800/80 backdrop-blur-md rounded-2xl shadow-2xl border border-slate-700 p-6 md:p-8 my-auto relative overflow-hidden">
+
+        <!-- SETUP SCREEN -->
+        <div id="setup-screen" class="space-y-6">
+            <div class="text-center">
+                <h2 class="text-2xl font-bold text-teal-400 mb-2">Chọn Chế Độ Chơi</h2>
+                <p class="text-slate-300 text-sm">Bộ đề 40 câu chuẩn ma trận định dạng mới: Không giới hạn thời gian, có âm thanh phản hồi!</p>
+            </div>
+
+            <!-- Mode Selector Buttons -->
+            <div class="flex justify-center space-x-4">
+                <button id="btn-mode-group" onclick="setGameMode('group')" class="px-6 py-2.5 rounded-xl font-bold text-sm bg-blue-600 text-white shadow-lg transition flex items-center space-x-2">
+                    <i class="fa-solid fa-users"></i> <span>Đấu Đội / Nhiều Người</span>
+                </button>
+                <button id="btn-mode-single" onclick="setGameMode('single')" class="px-6 py-2.5 rounded-xl font-bold text-sm bg-slate-700 text-slate-300 shadow-lg transition flex items-center space-x-2">
+                    <i class="fa-solid fa-user-graduate"></i> <span>Kiểm Tra Cá Nhân (Đấu đơn)</span>
+                </button>
+            </div>
+
+            <div class="bg-slate-900/60 p-4 rounded-xl border border-slate-700 space-y-4 max-w-md mx-auto">
+                <h3 id="setup-subtitle" class="text-center font-semibold text-teal-300 text-sm">Thiết lập thông tin các đội chơi</h3>
+                <div id="participant-inputs" class="space-y-3">
+                    <div class="flex items-center space-x-2">
+                        <span class="bg-blue-600 w-8 h-8 rounded-full flex items-center justify-center font-bold text-sm shrink-0">1</span>
+                        <input type="text" value="Đội 1" class="participant-input w-full bg-slate-900 border border-slate-600 rounded-lg px-4 py-2 text-white focus:outline-none focus:border-blue-500 font-semibold text-sm" placeholder="Nhập tên...">
+                    </div>
+                    <div class="flex items-center space-x-2">
+                        <span class="bg-purple-600 w-8 h-8 rounded-full flex items-center justify-center font-bold text-sm shrink-0">2</span>
+                        <input type="text" value="Đội 2" class="participant-input w-full bg-slate-900 border border-slate-600 rounded-lg px-4 py-2 text-white focus:outline-none focus:border-purple-500 font-semibold text-sm" placeholder="Nhập tên...">
+                    </div>
+                </div>
+
+                <div id="add-team-box" class="flex justify-center pt-2">
+                    <button onclick="addParticipantInput()" class="bg-slate-700 hover:bg-slate-600 text-white px-4 py-2 rounded-lg font-semibold text-xs transition flex items-center space-x-1">
+                        <i class="fa-solid fa-plus"></i> <span id="add-btn-text">Thêm đội</span>
+                    </button>
+                </div>
+            </div>
+
+            <div class="text-center pt-2">
+                <button onclick="startGame()" class="bg-gradient-to-r from-emerald-500 to-teal-600 hover:from-emerald-600 hover:to-teal-700 text-white font-bold text-lg px-8 py-3 rounded-xl shadow-lg transform transition hover:scale-105">
+                    Bắt Đầu Ngay (40 Câu)!
+                </button>
+            </div>
+        </div>
+
+        <!-- GAMEPLAY SCREEN -->
+        <div id="game-screen" class="hidden space-y-6">
+            <div class="flex flex-wrap justify-between items-center bg-slate-900/60 p-4 rounded-xl border border-slate-700">
+                <div class="flex items-center space-x-3 mb-2 sm:mb-0">
+                    <span id="turn-label" class="text-xs uppercase tracking-wider text-slate-400">Thí sinh:</span>
+                    <span id="current-participant-badge" class="bg-blue-600 text-white font-bold px-3 py-1 rounded-full text-sm shadow">Bạn</span>
+                </div>
+                <div class="text-sm font-semibold text-teal-300">
+                    Câu hỏi <span id="current-q-num">1</span> / <span id="total-q-num">40</span>
+                </div>
+                <div class="flex items-center space-x-2 text-slate-400 font-medium text-xs sm:text-sm">
+                    <i class="fa-regular fa-clock text-teal-400"></i>
+                    <span>Tự do làm bài</span>
+                </div>
+            </div>
+
+            <div id="scoreboard-mini" class="grid grid-cols-2 sm:grid-cols-4 gap-2 text-center"></div>
+
+            <div class="bg-slate-900/80 p-6 rounded-2xl border border-slate-700 shadow-inner">
+                <div id="question-badge" class="inline-block text-xs font-bold uppercase tracking-wider px-2.5 py-1 rounded bg-teal-800 text-teal-200 mb-2"></div>
+                <h3 id="question-text" class="text-lg md:text-xl font-bold text-white leading-relaxed"></h3>
+            </div>
+
+            <div id="options-container" class="space-y-4"></div>
+        </div>
+
+        <!-- FEEDBACK SCREEN -->
+        <div id="feedback-screen" class="hidden space-y-6 text-center py-4">
+            <div id="feedback-icon" class="text-6xl mb-2"></div>
+            <h3 id="feedback-title" class="text-2xl font-bold"></h3>
+            <div class="bg-slate-900 p-4 rounded-xl border border-slate-700 text-left max-w-2xl mx-auto">
+                <p class="text-xs font-bold text-slate-400 uppercase mb-1">Hướng dẫn giải thích đáp án:</p>
+                <p id="feedback-rationale" class="text-slate-200 text-sm md:text-base"></p>
+            </div>
+            <div>
+                <button onclick="nextQuestion()" class="bg-blue-600 hover:bg-blue-700 text-white font-bold px-8 py-3 rounded-xl shadow-lg transition transform hover:scale-105">
+                    Tiếp Tục <i class="fa-solid fa-arrow-right ml-2"></i>
+                </button>
+            </div>
+        </div>
+
+        <!-- END GAME SCREEN -->
+        <div id="end-screen" class="hidden space-y-6 text-center py-6">
+            <div class="text-6xl text-yellow-400 mb-2">
+                <i class="fa-solid fa-trophy animate-bounce"></i>
+            </div>
+            <h2 class="text-3xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-yellow-300 to-amber-500">
+                KẾT QUẢ BÀI THI TỔNG HỢP
+            </h2>
+            <p id="end-subtitle" class="text-slate-300">Đã hoàn thành toàn bộ 40 câu hỏi Bài 10!</p>
+
+            <div id="final-scoreboard" class="max-w-md mx-auto space-y-3"></div>
+
+            <div class="pt-4">
+                <button onclick="restartGame()" class="bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-700 hover:to-indigo-700 text-white font-bold px-8 py-3 rounded-xl shadow-lg transition transform hover:scale-105">
+                    Làm Lại Từ Đầu
+                </button>
+            </div>
+        </div>
+
+    </main>
+
+    <footer class="w-full max-w-4xl text-center text-xs text-slate-400 my-2">
+        Trò chơi học tập Hóa học 10 – Bài 10: Quy tắc Octet
+    </footer>
+
+    <script>
+        function typesetMath(element) {
+            if (!element) return;
+            const mj = window.MathJax;
+            if (!mj) return;
+            const ready = mj.startup && mj.startup.promise ? mj.startup.promise : Promise.resolve();
+            ready.then(() => {
+                if (window.MathJax.typesetPromise) {
+                    window.MathJax.typesetClear([element]);
+                    return window.MathJax.typesetPromise([element]);
+                }
+            }).catch(err => console.error("Lỗi hiển thị công thức:", err));
+        }
+
+        let audioCtx = null;
+        function getAudioContext() {
+            if (!audioCtx) {
+                audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+            }
+            if (audioCtx.state === 'suspended') {
+                audioCtx.resume();
+            }
+            return audioCtx;
+        }
+
+        function playCorrectSound() {
+            try {
+                const ctx = getAudioContext();
+                const now = ctx.currentTime;
+                const notes = [523.25, 659.25, 783.99];
+                notes.forEach((freq, index) => {
+                    const osc = ctx.createOscillator();
+                    const gain = ctx.createGain();
+                    osc.type = 'triangle';
+                    osc.frequency.setValueAtTime(freq, now + index * 0.1);
+                    gain.gain.setValueAtTime(0.18, now + index * 0.1);
+                    gain.gain.exponentialRampToValueAtTime(0.001, now + index * 0.1 + 0.28);
+                    osc.connect(gain);
+                    gain.connect(ctx.destination);
+                    osc.start(now + index * 0.1);
+                    osc.stop(now + index * 0.1 + 0.28);
+                });
+            } catch (e) {}
+        }
+
+        function playIncorrectSound() {
+            try {
+                const ctx = getAudioContext();
+                const now = ctx.currentTime;
+                const freqs = [174.61, 138.59];
+                freqs.forEach((freq, index) => {
+                    const osc = ctx.createOscillator();
+                    const gain = ctx.createGain();
+                    osc.type = 'sawtooth';
+                    osc.frequency.setValueAtTime(freq, now + index * 0.15);
+                    gain.gain.setValueAtTime(0.2, now + index * 0.15);
+                    gain.gain.exponentialRampToValueAtTime(0.001, now + index * 0.15 + 0.25);
+                    osc.connect(gain);
+                    gain.connect(ctx.destination);
+                    osc.start(now + index * 0.15);
+                    osc.stop(now + index * 0.15 + 0.25);
+                });
+            } catch (e) {}
+        }
+
+        // Ngân hàng 40 câu hỏi được biên soạn chuẩn theo Bài 10: Quy tắc Octet
+        const originalQuestions = [
+            // PHẦN 1: TRẮC NGHIỆM 4 LỰA CHỌN (30 CÂU)
+            {
+                "type": "mcq",
+                "level": "NB",
+                "lesson": "Bài 10: Quy tắc Octet",
+                "question": "Câu 1 [NB]. Liên kết hoá học là sự kết hợp giữa các nguyên tử tạo thành:",
+                "options": [
+                    { "text": "A. Hỗn hợp cơ học", "isCorrect": false },
+                    { "text": "B. Phân tử hay tinh thể bền vững hơn", "isCorrect": true },
+                    { "text": "C. Các nguyên tử tự do kém bền", "isCorrect": false },
+                    { "text": "D. Nguyên tử có mức năng lượng cao hơn", "isCorrect": false }
+                ],
+                "rationale": "Liên kết hóa học giúp các nguyên tử kết hợp tạo thành phân tử hoặc tinh thể bền vững hơn."
+            },
+            {
+                "type": "mcq",
+                "level": "NB",
+                "lesson": "Bài 10: Quy tắc Octet",
+                "question": "Câu 2 [NB]. Trừ helium (He), các nguyên tử khí hiếm khác ở điều kiện thường đều có bao nhiêu electron ở lớp ngoài cùng?",
+                "options": [
+                    { "text": "A. 2", "isCorrect": false },
+                    { "text": "B. 6", "isCorrect": false },
+                    { "text": "C. 8", "isCorrect": true },
+                    { "text": "D. 10", "isCorrect": false }
+                ],
+                "rationale": "Trừ He có 2 electron ở lớp ngoài cùng, các nguyên tử khí hiếm khác đều có 8 electron lớp ngoài cùng."
+            },
+            {
+                "type": "mcq",
+                "level": "NB",
+                "lesson": "Bài 10: Quy tắc Octet",
+                "question": "Câu 3 [NB]. Tên gọi của quy tắc diễn tả xu hướng nguyên tử nhường, nhận hoặc góp chung electron để đạt 8 electron lớp ngoài cùng bền vững là:",
+                "options": [
+                    { "text": "A. Quy tắc Hund", "isCorrect": false },
+                    { "text": "B. Quy tắc Pauli", "isCorrect": false },
+                    { "text": "C. Quy tắc octet", "isCorrect": true },
+                    { "text": "D. Nguyên lí bền vững", "isCorrect": false }
+                ],
+                "rationale": "Đó là quy tắc octet (quy tắc bát tử)."
+            },
+            {
+                "type": "mcq",
+                "level": "NB",
+                "lesson": "Bài 10: Quy tắc Octet",
+                "question": "Câu 4 [NB]. Trong các phản ứng hoá học, các electron tham gia trực tiếp vào quá trình tạo thành liên kết được gọi là:",
+                "options": [
+                    { "text": "A. Electron lớp K", "isCorrect": false },
+                    { "text": "B. Electron hoá trị", "isCorrect": true },
+                    { "text": "C. Electron độc thân", "isCorrect": false },
+                    { "text": "D. Electron hạt nhân", "isCorrect": false }
+                ],
+                "rationale": "Các electron tham gia tạo liên kết hóa học gọi là electron hóa trị."
+            },
+            {
+                "type": "mcq",
+                "level": "NB",
+                "lesson": "Bài 10: Quy tắc Octet",
+                "question": "Câu 5 [NB]. Các electron hoá trị của nguyên tử từ một nguyên tố được quy ước biểu diễn bằng kí hiệu nào xung quanh tên nguyên tố?",
+                "options": [
+                    { "text": "A. Dấu gạch ngang", "isCorrect": false },
+                    { "text": "B. Dấu chấm", "isCorrect": true },
+                    { "text": "C. Dấu cộng", "isCorrect": false },
+                    { "text": "D. Ô vuông", "isCorrect": false }
+                ],
+                "rationale": "Mỗi electron hóa trị được biểu diễn bằng một dấu chấm xung quanh kí hiệu nguyên tố."
+            },
+            {
+                "type": "mcq",
+                "level": "NB",
+                "lesson": "Bài 10: Quy tắc Octet",
+                "question": "Câu 6 [NB]. Nguyên tử khí hiếm duy nhất chỉ có 2 electron ở lớp ngoài cùng là:",
+                "options": [
+                    { "text": "A. Neon (Ne)", "isCorrect": false },
+                    { "text": "B. Argon (Ar)", "isCorrect": false },
+                    { "text": "C. Helium (He)", "isCorrect": true },
+                    { "text": "D. Krypton (Kr)", "isCorrect": false }
+                ],
+                "rationale": "Helium (He) chỉ có 2 electron ở lớp ngoài cùng (1s2)."
+            },
+            {
+                "type": "mcq",
+                "level": "NB",
+                "lesson": "Bài 10: Quy tắc Octet",
+                "question": "Câu 7 [NB]. Nguyên tử Sodium (Na, thuộc nhóm IA) có bao nhiêu electron hoá trị?",
+                "options": [
+                    { "text": "A. 1", "isCorrect": true },
+                    { "text": "B. 2", "isCorrect": false },
+                    { "text": "C. 7", "isCorrect": false },
+                    { "text": "D. 8", "isCorrect": false }
+                ],
+                "rationale": "Na thuộc nhóm IA nên có 1 electron hóa trị ở lớp ngoài cùng."
+            },
+            {
+                "type": "mcq",
+                "level": "NB",
+                "lesson": "Bài 10: Quy tắc Octet",
+                "question": "Câu 8 [NB]. Biểu diễn electron hoá trị của nguyên tử Chlorine (Cl, thuộc nhóm VIIA) gồm bao nhiêu dấu chấm xung quanh kí hiệu nguyên tố?",
+                "options": [
+                    { "text": "A. 1", "isCorrect": false },
+                    { "text": "B. 5", "isCorrect": false },
+                    { "text": "C. 7", "isCorrect": true },
+                    { "text": "D. 8", "isCorrect": false }
+                ],
+                "rationale": "Chlorine thuộc nhóm VIIA có 7 electron hóa trị nên được biểu diễn bởi 7 dấu chấm."
+            },
+            {
+                "type": "mcq",
+                "level": "NB",
+                "lesson": "Bài 10: Quy tắc Octet",
+                "question": "Câu 9 [NB]. Nguyên tử Oxygen (O, thuộc nhóm VIA) có bao nhiêu electron hoá trị?",
+                "options": [
+                    { "text": "A. 2", "isCorrect": false },
+                    { "text": "B. 4", "isCorrect": false },
+                    { "text": "C. 6", "isCorrect": true },
+                    { "text": "D. 8", "isCorrect": false }
+                ],
+                "rationale": "Oxygen thuộc nhóm VIA có 6 electron hóa trị ở lớp ngoài cùng."
+            },
+            {
+                "type": "mcq",
+                "level": "NB",
+                "lesson": "Bài 10: Quy tắc Octet",
+                "question": "Câu 10 [NB]. Để đạt được cấu hình electron bền vững theo quy tắc octet, nguyên tử các nguyên tố không thực hiện cách nào sau đây?",
+                "options": [
+                    { "text": "A. Nhường electron", "isCorrect": false },
+                    { "text": "B. Nhận electron", "isCorrect": false },
+                    { "text": "C. Góp chung electron", "isCorrect": false },
+                    { "text": "D. Biến đổi hạt nhân", "isCorrect": true }
+                ],
+                "rationale": "Phản ứng hóa học chỉ liên quan đến vỏ electron, không có sự biến đổi hạt nhân."
+            },
+            {
+                "type": "mcq",
+                "level": "NB",
+                "lesson": "Bài 10: Quy tắc Octet",
+                "question": "Câu 11 [NB]. Khi nhường hoặc nhận electron, nguyên tử trung hoà về điện sẽ chuyển thành hạt mang điện gọi là:",
+                "options": [
+                    { "text": "A. Phân tử", "isCorrect": false },
+                    { "text": "B. Ion", "isCorrect": true },
+                    { "text": "C. Radical", "isCorrect": false },
+                    { "text": "D. Neutron", "isCorrect": false }
+                ],
+                "rationale": "Khi nguyên tử nhường hoặc nhận electron sẽ trở thành ion mang điện âm hoặc dương."
+            },
+            {
+                "type": "mcq",
+                "level": "NB",
+                "lesson": "Bài 10: Quy tắc Octet",
+                "question": "Câu 12 [NB]. Quy tắc octet giải thích đúng nhất sự tạo thành liên kết hoá học giữa các nguyên tử thuộc chu kì nào trong bảng tuần hoàn?",
+                "options": [
+                    { "text": "A. Chu kì 1", "isCorrect": false },
+                    { "text": "B. Chu kì 2", "isCorrect": true },
+                    { "text": "C. Chu kì 5", "isCorrect": false },
+                    { "text": "D. Chu kì 7", "isCorrect": false }
+                ],
+                "rationale": "Quy tắc octet áp dụng đúng nhất cho các nguyên tử thuộc chu kì 2."
+            },
+            {
+                "type": "mcq",
+                "level": "TH",
+                "lesson": "Bài 10: Quy tắc Octet",
+                "question": "Câu 13 [TH]. Trong sự hình thành phân tử chlorine ($Cl_2$), để đạt cấu hình octet, mỗi nguyên tử Cl đã:",
+                "options": [
+                    { "text": "A. Nhường 1 electron", "isCorrect": false },
+                    { "text": "B. Nhận 1 electron", "isCorrect": false },
+                    { "text": "C. Góp chung 1 electron", "isCorrect": true },
+                    { "text": "D. Góp chung 2 electron", "isCorrect": false }
+                ],
+                "rationale": "Mỗi nguyên tử Cl có 7 e hóa trị, góp chung 1 e tạo 1 cặp e dùng chung để đạt 8 e."
+            },
+            {
+                "type": "mcq",
+                "level": "TH",
+                "lesson": "Bài 10: Quy tắc Octet",
+                "question": "Câu 14 [TH]. Trong phân tử nước ($H_2O$), nguyên tử oxygen đạt cấu hình octet bằng cách:",
+                "options": [
+                    { "text": "A. Nhận 2 electron từ 2 nguyên tử hydrogen", "isCorrect": false },
+                    { "text": "B. Nhường 2 electron cho 2 nguyên tử hydrogen", "isCorrect": false },
+                    { "text": "C. Góp chung 2 cặp electron với 2 nguyên tử hydrogen", "isCorrect": true },
+                    { "text": "D. Góp chung 4 cặp electron với 2 nguyên tử hydrogen", "isCorrect": false }
+                ],
+                "rationale": "O có 6 e hóa trị, góp chung 2 e tạo 2 cặp electron liên kết với 2 nguyên tử H."
+            },
+            {
+                "type": "mcq",
+                "level": "TH",
+                "lesson": "Bài 10: Quy tắc Octet",
+                "question": "Câu 15 [TH]. Trong sự hình thành hợp chất NaF, ion $Na^+$ và ion $F^-$ thu được đều có cấu hình electron bền vững của nguyên tử khí hiếm nào?",
+                "options": [
+                    { "text": "A. Helium (He)", "isCorrect": false },
+                    { "text": "B. Neon (Ne)", "isCorrect": true },
+                    { "text": "C. Argon (Ar)", "isCorrect": false },
+                    { "text": "D. Krypton (Kr)", "isCorrect": false }
+                ],
+                "rationale": "$Na^+$ và $F^-$ đều có 10 electron, giống cấu hình electron bền vững của Neon ($1s^2 2s^2 2p^6$)."
+            },
+            {
+                "type": "mcq",
+                "level": "TH",
+                "lesson": "Bài 10: Quy tắc Octet",
+                "question": "Câu 16 [TH]. Khi tham gia tạo thành liên kết trong hợp chất NaF, nguyên tử Fluorine (F) đã:",
+                "options": [
+                    { "text": "A. Nhường 1 electron để đạt 8 electron lớp ngoài cùng", "isCorrect": false },
+                    { "text": "B. Nhận 1 electron để đạt 8 electron lớp ngoài cùng", "isCorrect": true },
+                    { "text": "C. Nhường 7 electron để đạt cấu hình của He", "isCorrect": false },
+                    { "text": "D. Góp chung 7 electron với Na", "isCorrect": false }
+                ],
+                "rationale": "F có 7 e hóa trị, nhận 1 e từ Na để trở thành ion $F^-$ có 8 e lớp ngoài cùng."
+            },
+            {
+                "type": "mcq",
+                "level": "TH",
+                "lesson": "Bài 10: Quy tắc Octet",
+                "question": "Câu 17 [TH]. Nguyên tử Sodium (Na) nhường 1 electron khi tạo liên kết ion để trở thành cation $Na^+$ có bao nhiêu electron ở lớp ngoài cùng?",
+                "options": [
+                    { "text": "A. 1", "isCorrect": false },
+                    { "text": "B. 2", "isCorrect": false },
+                    { "text": "C. 8", "isCorrect": true },
+                    { "text": "D. 10", "isCorrect": false }
+                ],
+                "rationale": "Cation $Na^+$ có cấu hình $1s^2 2s^2 2p^6$, lớp ngoài cùng có 8 electron."
+            },
+            {
+                "type": "mcq",
+                "level": "TH",
+                "lesson": "Bài 10: Quy tắc Octet",
+                "question": "Câu 18 [TH]. Trong phân tử $F_2$, sau khi hình thành cặp electron dùng chung, xung quanh mỗi nguyên tử fluorine có bao nhiêu electron?",
+                "options": [
+                    { "text": "A. 2", "isCorrect": false },
+                    { "text": "B. 6", "isCorrect": false },
+                    { "text": "C. 8", "isCorrect": true },
+                    { "text": "D. 10", "isCorrect": false }
+                ],
+                "rationale": "Sau khi góp chung 1 cặp e, mỗi nguyên tử F sở hữu 8 electron bão hòa lớp ngoài cùng."
+            },
+            {
+                "type": "mcq",
+                "level": "TH",
+                "lesson": "Bài 10: Quy tắc Octet",
+                "question": "Câu 19 [TH]. Phân tử phosphine ($PH_3$) được tạo thành do nguyên tử P (có 5 e hoá trị) đạt cấu hình octet bằng cách:",
+                "options": [
+                    { "text": "A. Nhường 3 electron cho 3 nguyên tử H", "isCorrect": false },
+                    { "text": "B. Nhận 3 electron từ 3 nguyên tử H", "isCorrect": false },
+                    { "text": "C. Góp chung 3 cặp electron với 3 nguyên tử H", "isCorrect": true },
+                    { "text": "D. Góp chung 5 cặp electron với 3 nguyên tử H", "isCorrect": false }
+                ],
+                "rationale": "P góp 3 e với 3 nguyên tử H để tạo 3 cặp electron dùng chung."
+            },
+            {
+                "type": "mcq",
+                "level": "TH",
+                "lesson": "Bài 10: Quy tắc Octet",
+                "question": "Câu 20 [TH]. Phân tử nào sau đây là một ví dụ về ngoại lệ của quy tắc octet khi lớp ngoài cùng của nguyên tử trung tâm có 10 electron?",
+                "options": [
+                    { "text": "A. $Cl_2$", "isCorrect": false },
+                    { "text": "B. $H_2O$", "isCorrect": false },
+                    { "text": "C. NaF", "isCorrect": false },
+                    { "text": "D. $PCl_5$", "isCorrect": true }
+                ],
+                "rationale": "Trong $PCl_5$, nguyên tử P liên kết với 5 Cl, xung quanh P có 10 electron lớp ngoài cùng."
+            },
+            {
+                "type": "mcq",
+                "level": "TH",
+                "lesson": "Bài 10: Quy tắc Octet",
+                "question": "Câu 21 [TH]. Khi tạo thành liên kết hoá học, xu hướng chung của các nguyên tử kim loại điển hình (nhóm IA, IIA) là:",
+                "options": [
+                    { "text": "A. Dễ nhận electron để đạt cấu hình khí hiếm", "isCorrect": false },
+                    { "text": "B. Dễ nhường electron để đạt cấu hình khí hiếm", "isCorrect": true },
+                    { "text": "C. Dễ góp chung 8 electron với phi kim", "isCorrect": false },
+                    { "text": "D. Không thay đổi số electron hoá trị", "isCorrect": false }
+                ],
+                "rationale": "Các kim loại điển hình dễ nhường electron hóa trị để đạt cấu hình khí hiếm gần nhất."
+            },
+            {
+                "type": "mcq",
+                "level": "VD",
+                "lesson": "Bài 10: Quy tắc Octet",
+                "question": "Câu 22 [VD]. Dựa vào quy tắc octet, trong phân tử nitrogen trifluoride ($NF_3$), số cặp electron dùng chung giữa nguyên tử N và 3 nguyên tử F là:",
+                "options": [
+                    { "text": "A. 1", "isCorrect": false },
+                    { "text": "B. 2", "isCorrect": false },
+                    { "text": "C. 3", "isCorrect": true },
+                    { "text": "D. 4", "isCorrect": false }
+                ],
+                "rationale": "Nguyên tử N góp 3 e với 3 nguyên tử F tạo 3 cặp electron dùng chung."
+            },
+            {
+                "type": "mcq",
+                "level": "VD",
+                "lesson": "Bài 10: Quy tắc Octet",
+                "question": "Câu 23 [VD]. Trong phân tử $NF_3$, sau khi đạt cấu hình octet, trên nguyên tử trung tâm Nitrogen (N) còn lại bao nhiêu electron hoá trị chưa tham gia liên kết?",
+                "options": [
+                    { "text": "A. 0", "isCorrect": false },
+                    { "text": "B. 2", "isCorrect": true },
+                    { "text": "C. 3", "isCorrect": false },
+                    { "text": "D. 5", "isCorrect": false }
+                ],
+                "rationale": "N có 5 e hóa trị, dùng 3 e liên kết nên còn lại 5 - 3 = 2 e (1 cặp e) chưa liên kết."
+            },
+            {
+                "type": "mcq",
+                "level": "VD",
+                "lesson": "Bài 10: Quy tắc Octet",
+                "question": "Câu 24 [VD]. Áp dụng quy tắc octet giải thích sự tạo thành phân tử carbon tetrachloride ($CCl_4$): Nguyên tử Carbon (C, nhóm IVA) có 4 e hoá trị sẽ góp chung bao nhiêu electron với 4 nguyên tử Cl?",
+                "options": [
+                    { "text": "A. 1 electron", "isCorrect": false },
+                    { "text": "B. 2 electron", "isCorrect": false },
+                    { "text": "C. 4 electron (mỗi Cl góp 1 e)", "isCorrect": true },
+                    { "text": "D. 8 electron", "isCorrect": false }
+                ],
+                "rationale": "Carbon góp cả 4 e hóa trị với 4 nguyên tử Cl để đạt cấu hình octet."
+            },
+            {
+                "type": "mcq",
+                "level": "VD",
+                "lesson": "Bài 10: Quy tắc Octet",
+                "question": "Câu 25 [VD]. Vận dụng quy tắc octet để dự đoán công thức phân tử tạo bởi nguyên tử Magnesium (Mg, nhóm IIA) và Oxygen (O, nhóm VIA):",
+                "options": [
+                    { "text": "A. MgO", "isCorrect": true },
+                    { "text": "B. $Mg_2O$", "isCorrect": false },
+                    { "text": "C. $MgO_2$", "isCorrect": false },
+                    { "text": "D. $Mg_2O_3$", "isCorrect": false }
+                ],
+                "rationale": "Mg nhường 2e thành $Mg^{2+}$, O nhận 2e thành $O^{2-} \\rightarrow MgO$."
+            },
+            {
+                "type": "mcq",
+                "level": "VD",
+                "lesson": "Bài 10: Quy tắc Octet",
+                "question": "Câu 26 [VD]. Biểu diễn electron hoá trị đúng theo quy ước cho nguyên tử Silicon (Si, thuộc nhóm IVA) gồm:",
+                "options": [
+                    { "text": "A. 2 dấu chấm đặt 2 bên", "isCorrect": false },
+                    { "text": "B. 4 dấu chấm đặt xung quanh kí hiệu Si", "isCorrect": true },
+                    { "text": "C. 6 dấu chấm chia thành 3 cặp", "isCorrect": false },
+                    { "text": "D. 8 dấu chấm chia thành 4 cặp", "isCorrect": false }
+                ],
+                "rationale": "Si thuộc nhóm IVA có 4 e hóa trị, biểu diễn bằng 4 dấu chấm phân bố 4 phía."
+            },
+            {
+                "type": "mcq",
+                "level": "VD",
+                "lesson": "Bài 10: Quy tắc Octet",
+                "question": "Câu 27 [VD]. Vận dụng quy tắc octet giải thích sự hình thành liên kết trong diphosphine ($P_2H_4$), mỗi nguyên tử P (5 e hoá trị) liên kết với 2 nguyên tử H và liên kết với nguyên tử P còn lại bằng:",
+                "options": [
+                    { "text": "A. 1 cặp electron dùng chung (P–P)", "isCorrect": true },
+                    { "text": "B. 2 cặp electron dùng chung (P=P)", "isCorrect": false },
+                    { "text": "C. Lực hút ion", "isCorrect": false },
+                    { "text": "D. Quá trình nhường hoàn toàn 5 electron", "isCorrect": false }
+                ],
+                "rationale": "Mỗi P liên kết đơn với 2 H và 1 P còn lại qua 1 cặp e dùng chung (P-P)."
+            },
+            {
+                "type": "mcq",
+                "level": "VDC",
+                "lesson": "Bài 10: Quy tắc Octet",
+                "question": "Câu 28 [VDC]. Trong phân tử $NF_3$, tổng số electron hoá trị là 26. Sau khi tất cả các nguyên tử N và F đạt cấu hình octet, tổng số electron chưa tham gia liên kết trong toàn bộ phân tử $NF_3$ là:",
+                "options": [
+                    { "text": "A. 6", "isCorrect": false },
+                    { "text": "B. 18", "isCorrect": false },
+                    { "text": "C. 20", "isCorrect": true },
+                    { "text": "D. 26", "isCorrect": false }
+                ],
+                "rationale": "Số e liên kết = 3 cặp = 6. Số e chưa liên kết = 26 - 6 = 20 e (gồm 2 e trên N và 6 e trên mỗi F)."
+            },
+            {
+                "type": "mcq",
+                "level": "VDC",
+                "lesson": "Bài 10: Quy tắc Octet",
+                "question": "Câu 29 [VDC]. Trong các phân tử và ion sau: $F_2$, $H_2O$, NaF, $PCl_5$, phân tử nào không tuân theo quy tắc octet đối với nguyên tử trung tâm và nguyên nhân là do:",
+                "options": [
+                    { "text": "A. $F_2$, do fluorine có độ âm điện quá lớn", "isCorrect": false },
+                    { "text": "B. $H_2O$, do hydrogen chỉ có 2 electron", "isCorrect": false },
+                    { "text": "C. $PCl_5$, do nguyên tử trung tâm P có 10 electron lớp ngoài cùng", "isCorrect": true },
+                    { "text": "D. NaF, do lực hút tĩnh điện giữa các ion", "isCorrect": false }
+                ],
+                "rationale": "Trong $PCl_5$, nguyên tử P mở rộng vỏ hóa trị chứa 10 electron lớp ngoài cùng."
+            },
+            {
+                "type": "mcq",
+                "level": "VDC",
+                "lesson": "Bài 10: Quy tắc Octet",
+                "question": "Câu 30 [VDC]. Một nguyên tử nguyên tố X thuộc chu kì 2 kết hợp với 4 nguyên tử Hydrogen tạo thành phân tử $XH_4$ thoả mãn quy tắc octet. Số electron lớp ngoài cùng của X khi chưa liên kết là:",
+                "options": [
+                    { "text": "A. 2", "isCorrect": false },
+                    { "text": "B. 4", "isCorrect": true },
+                    { "text": "C. 6", "isCorrect": false },
+                    { "text": "D. 8", "isCorrect": false }
+                ],
+                "rationale": "Để tạo 4 liên kết với 4 H và đạt octet không thừa e độc thân, X phải góp 4 e $\\rightarrow$ có 4 e hóa trị ban đầu."
+            },
+
+            // PHẦN 2: TRẮC NGHIỆM ĐÚNG/SAI (5 CÂU = 20 Ý)
+            {
+                "type": "tf",
+                "level": "NB",
+                "lesson": "Bài 10: Quy tắc Octet",
+                "question": "Xét các phát biểu về liên kết hoá học và electron hoá trị. — ý a) Liên kết hoá học là sự kết hợp giữa các nguyên tử tạo thành phân tử hay tinh thể bền vững hơn.",
+                "correctBool": true,
+                "rationale": "Đúng theo định nghĩa về liên kết hóa học."
+            },
+            {
+                "type": "tf",
+                "level": "NB",
+                "lesson": "Bài 10: Quy tắc Octet",
+                "question": "Xét các phát biểu về liên kết hoá học và electron hoá trị. — ý b) Trong các phản ứng hoá học, tất cả các electron trong nguyên tử đều tham gia tạo thành liên kết.",
+                "correctBool": false,
+                "rationale": "Sai: Chỉ các electron hóa trị (lớp ngoài cùng và sát ngoài cùng) tham gia liên kết."
+            },
+            {
+                "type": "tf",
+                "level": "NB",
+                "lesson": "Bài 10: Quy tắc Octet",
+                "question": "Xét các phát biểu về liên kết hoá học và electron hoá trị. — ý c) Các electron hoá trị tham gia liên kết được quy ước biểu diễn bằng các dấu chấm xung quanh kí hiệu nguyên tố.",
+                "correctBool": true,
+                "rationale": "Đúng theo biểu diễn kí hiệu electron Lewis."
+            },
+            {
+                "type": "tf",
+                "level": "NB",
+                "lesson": "Bài 10: Quy tắc Octet",
+                "question": "Xét các phát biểu về liên kết hoá học và electron hoá trị. — ý d) Nguyên tử khí hiếm Helium (He) có 8 electron ở lớp ngoài cùng.",
+                "correctBool": false,
+                "rationale": "Sai: Helium (He) chỉ có 2 electron ở lớp ngoài cùng."
+            },
+            {
+                "type": "tf",
+                "level": "NB",
+                "lesson": "Bài 10: Quy tắc Octet",
+                "question": "Xét nội dung và bản chất của quy tắc octet. — ý a) Quy tắc octet mô tả xu hướng của các nguyên tử đạt tới cấu hình electron bền vững của khí hiếm.",
+                "correctBool": true,
+                "rationale": "Đúng: Đây là nội dung cốt lõi của quy tắc octet."
+            },
+            {
+                "type": "tf",
+                "level": "NB",
+                "lesson": "Bài 10: Quy tắc Octet",
+                "question": "Xét nội dung và bản chất của quy tắc octet. — ý b) Cấu hình electron bền vững của đa số nguyên tử khí hiếm gồm 8 electron ở lớp ngoài cùng.",
+                "correctBool": true,
+                "rationale": "Đúng: Đa số khí hiếm có cấu hình $ns^2 np^6$ (8 electron)."
+            },
+            {
+                "type": "tf",
+                "level": "NB",
+                "lesson": "Bài 10: Quy tắc Octet",
+                "question": "Xét nội dung và bản chất của quy tắc octet. — ý c) Nguyên tử chỉ có một cách duy nhất là nhường electron để đạt cấu hình octet.",
+                "correctBool": false,
+                "rationale": "Sai: Nguyên tử có thể nhường, nhận hoặc góp chung electron."
+            },
+            {
+                "type": "tf",
+                "level": "NB",
+                "lesson": "Bài 10: Quy tắc Octet",
+                "question": "Xét nội dung và bản chất của quy tắc octet. — ý d) Nguyên tử Hydrogen đạt trạng thái bền vững khi lớp ngoài cùng có 2 electron (giống He).",
+                "correctBool": true,
+                "rationale": "Đúng: Hydrogen tuân theo quy tắc duplet (2 electron giống He)."
+            },
+            {
+                "type": "tf",
+                "level": "TH",
+                "lesson": "Bài 10: Quy tắc Octet",
+                "question": "Xét quá trình hình thành liên kết trong các phân tử $Cl_2$, $H_2O$ và NaF. — ý a) Phân tử $Cl_2$ được hình thành do mỗi nguyên tử Cl góp chung 1 electron hoá trị.",
+                "correctBool": true,
+                "rationale": "Đúng: 2 nguyên tử Cl góp 1 e tạo 1 liên kết đơn."
+            },
+            {
+                "type": "tf",
+                "level": "TH",
+                "lesson": "Bài 10: Quy tắc Octet",
+                "question": "Xét quá trình hình thành liên kết trong các phân tử $Cl_2$, $H_2O$ và NaF. — ý b) Trong phân tử $H_2O$, xung quanh nguyên tử oxygen có 8 electron bão hoá.",
+                "correctBool": true,
+                "rationale": "Đúng: Oxygen đạt 8 electron quanh hạt nhân."
+            },
+            {
+                "type": "tf",
+                "level": "TH",
+                "lesson": "Bài 10: Quy tắc Octet",
+                "question": "Xét quá trình hình thành liên kết trong các phân tử $Cl_2$, $H_2O$ và NaF. — ý c) Trong phân tử NaF, nguyên tử Na nhận 1 electron từ nguyên tử F.",
+                "correctBool": false,
+                "rationale": "Sai: Nguyên tử Na nhường 1 e cho nguyên tử F."
+            },
+            {
+                "type": "tf",
+                "level": "TH",
+                "lesson": "Bài 10: Quy tắc Octet",
+                "question": "Xét quá trình hình thành liên kết trong các phân tử $Cl_2$, $H_2O$ và NaF. — ý d) Cả ion $Na^+$ và ion $F^-$ trong hợp chất NaF đều đạt cấu hình bền vững của khí hiếm Neon.",
+                "correctBool": true,
+                "rationale": "Đúng: Đều đạt 10 electron ($1s^2 2s^2 2p^6$)."
+            },
+            {
+                "type": "tf",
+                "level": "VD",
+                "lesson": "Bài 10: Quy tắc Octet",
+                "question": "Xét sự áp dụng quy tắc octet cho các phân tử $F_2$, $CCl_4$, $NF_3$ và $PH_3$. — ý c) Trong phân tử $NF_3$, nguyên tử Nitrogen không còn electron nào chưa liên kết.",
+                "correctBool": false,
+                "rationale": "Sai: Nguyên tử N còn lại 1 cặp (2 electron) chưa liên kết."
+            },
+            {
+                "type": "tf",
+                "level": "VDC",
+                "lesson": "Bài 10: Quy tắc Octet",
+                "question": "Xét phạm vi áp dụng và ngoại lệ của quy tắc octet. — ý a) Quy tắc octet nghiệm đúng cho tất cả các phân tử của mọi nguyên tố trong bảng tuần hoàn mà không có ngoại lệ.",
+                "correctBool": false,
+                "rationale": "Sai: Có nhiều ngoại lệ như $PCl_5, BF_3, NO$."
+            },
+
+            // PHẦN 3: CÂU TRẢ LỜI NGẮN (5 CÂU)
+            {
+                "type": "sa",
+                "level": "NB",
+                "lesson": "Bài 10: Quy tắc Octet",
+                "question": "Câu 1 [NB]. Theo quy tắc octet, các nguyên tử có xu hướng nhường, nhận hoặc góp chung electron để đạt tới lớp ngoài cùng chứa bao nhiêu electron (trừ trường hợp giống He)?",
+                "correctAnswer": "8|8 electron",
+                "rationale": "Quy tắc octet hướng tới đạt 8 electron bền vững ở lớp ngoài cùng."
+            },
+            {
+                "type": "sa",
+                "level": "NB",
+                "lesson": "Bài 10: Quy tắc Octet",
+                "question": "Câu 2 [NB]. Viết số electron hoá trị của nguyên tử Oxygen (O, thuộc nhóm VIA).",
+                "correctAnswer": "6",
+                "rationale": "Oxygen thuộc nhóm VIA có 6 electron hóa trị."
+            },
+            {
+                "type": "sa",
+                "level": "TH",
+                "lesson": "Bài 10: Quy tắc Octet",
+                "question": "Câu 3 [TH]. Trong phân tử chlorine ($Cl_2$), tổng số electron dùng chung giữa hai nguyên tử Cl là bao nhiêu?",
+                "correctAnswer": "2|1 cặp|1 cặp electron",
+                "rationale": "Liên kết đơn giữa 2 nguyên tử Cl gồm 2 electron dùng chung (1 cặp e)."
+            },
+            {
+                "type": "sa",
+                "level": "VD",
+                "lesson": "Bài 10: Quy tắc Octet",
+                "question": "Câu 4 [VD]. Trong phân tử nitrogen trifluoride ($NF_3$), tính tổng số cặp electron chưa liên kết của tất cả các nguyên tử (N và 3F).",
+                "correctAnswer": "10|10 cặp",
+                "rationale": "N có 1 cặp chưa liên kết. Mỗi F có 3 cặp chưa liên kết. Tổng số cặp chưa liên kết = $1 + 3 \\times 3 = 10$ cặp."
+            },
+            {
+                "type": "sa",
+                "level": "VDC",
+                "lesson": "Bài 10: Quy tắc Octet",
+                "question": "Câu 5 [VDC]. Xác định số electron ở lớp ngoài cùng của nguyên tử trung tâm Phosphorus (P) trong phân tử ngoại lệ $PCl_5$.",
+                "correctAnswer": "10|10 electron",
+                "rationale": "Trong $PCl_5$, xung quanh nguyên tử trung tâm P có 10 electron."
+            }
+        ];
+
+        let questions = [];
+        let participants = [];
+        let gameMode = 'group';
+        let currentIndex = 0;
+        let currentQuestionIndex = 0;
+
+        function setGameMode(mode) {
+            gameMode = mode;
+            const btnGroup = document.getElementById('btn-mode-group');
+            const btnSingle = document.getElementById('btn-mode-single');
+            const subtitle = document.getElementById('setup-subtitle');
+            const container = document.getElementById('participant-inputs');
+            const addTeamBox = document.getElementById('add-team-box');
+
+            if (mode === 'group') {
+                btnGroup.className = "px-6 py-2.5 rounded-xl font-bold text-sm bg-blue-600 text-white shadow-lg transition flex items-center space-x-2";
+                btnSingle.className = "px-6 py-2.5 rounded-xl font-bold text-sm bg-slate-700 text-slate-300 shadow-lg transition flex items-center space-x-2";
+                subtitle.innerText = "Thiết lập thông tin các đội chơi";
+                addTeamBox.style.display = 'flex';
+                container.innerHTML = `
+                    <div class="flex items-center space-x-2">
+                        <span class="bg-blue-600 w-8 h-8 rounded-full flex items-center justify-center font-bold text-sm shrink-0">1</span>
+                        <input type="text" value="Đội 1" class="participant-input w-full bg-slate-900 border border-slate-600 rounded-lg px-4 py-2 text-white focus:outline-none focus:border-blue-500 font-semibold text-sm" placeholder="Nhập tên...">
+                    </div>
+                    <div class="flex items-center space-x-2">
+                        <span class="bg-purple-600 w-8 h-8 rounded-full flex items-center justify-center font-bold text-sm shrink-0">2</span>
+                        <input type="text" value="Đội 2" class="participant-input w-full bg-slate-900 border border-slate-600 rounded-lg px-4 py-2 text-white focus:outline-none focus:border-purple-500 font-semibold text-sm" placeholder="Nhập tên...">
+                    </div>
+                `;
+            } else {
+                btnSingle.className = "px-6 py-2.5 rounded-xl font-bold text-sm bg-teal-600 text-white shadow-lg transition flex items-center space-x-2";
+                btnGroup.className = "px-6 py-2.5 rounded-xl font-bold text-sm bg-slate-700 text-slate-300 shadow-lg transition flex items-center space-x-2";
+                subtitle.innerText = "Nhập họ và tên học sinh làm bài";
+                addTeamBox.style.display = 'none';
+                container.innerHTML = `
+                    <div class="flex items-center space-x-2">
+                        <span class="bg-teal-600 w-8 h-8 rounded-full flex items-center justify-center font-bold text-sm shrink-0"><i class="fa-solid fa-user"></i></span>
+                        <input type="text" value="Nguyễn Văn A" class="participant-input w-full bg-slate-900 border border-slate-600 rounded-lg px-4 py-2 text-white focus:outline-none focus:border-teal-500 font-semibold text-sm" placeholder="Họ và tên của bạn...">
+                    </div>
+                `;
+            }
+        }
+
+        function addParticipantInput() {
+            const container = document.getElementById('participant-inputs');
+            const count = container.children.length + 1;
+            const div = document.createElement('div');
+            div.className = 'flex items-center space-x-2';
+            const colorClass = count % 2 === 0 ? 'bg-purple-600' : 'bg-blue-600';
+            div.innerHTML = `
+                <span class="${colorClass} w-8 h-8 rounded-full flex items-center justify-center font-bold text-sm shrink-0">${count}</span>
+                <input type="text" value="Đội ${count}" class="participant-input w-full bg-slate-900 border border-slate-600 rounded-lg px-4 py-2 text-white focus:outline-none focus:border-blue-500 font-semibold text-sm" placeholder="Nhập tên...">
+                <button onclick="this.parentElement.remove()" class="text-red-400 hover:text-red-300 px-2"><i class="fa-solid fa-trash"></i></button>
+            `;
+            container.appendChild(div);
+        }
+
+        function startGame() {
+            getAudioContext();
+            const inputs = document.querySelectorAll('.participant-input');
+            participants = [];
+            inputs.forEach((input, index) => {
+                const name = input.value.trim() || (gameMode === 'group' ? `Đội ${index + 1}` : `Học sinh`);
+                participants.push({ name: name, score: 0, correctCount: 0 });
+            });
+
+            if (participants.length === 0) {
+                alert("Vui lòng nhập tên người làm bài!");
+                return;
+            }
+
+            questions = [...originalQuestions].sort(() => Math.random() - 0.5);
+
+            document.getElementById('setup-screen').classList.add('hidden');
+            document.getElementById('game-screen').classList.remove('hidden');
+            document.getElementById('total-q-num').innerText = questions.length;
+            
+            if (gameMode === 'single') {
+                document.getElementById('turn-label').innerText = 'Học sinh:';
+            } else {
+                document.getElementById('turn-label').innerText = 'Lượt của:';
+            }
+
+            currentIndex = 0;
+            currentQuestionIndex = 0;
+            loadQuestion();
+        }
+
+        function updateScoreboardMini() {
+            const container = document.getElementById('scoreboard-mini');
+            container.innerHTML = '';
+            
+            if (gameMode === 'single') {
+                container.style.display = 'none';
+                document.getElementById('current-participant-badge').innerText = participants[0].name;
+            } else {
+                container.style.display = 'grid';
+                participants.forEach((p, idx) => {
+                    const isCurrent = idx === currentIndex;
+                    const div = document.createElement('div');
+                    div.className = `p-2 rounded-lg border ${isCurrent ? 'border-teal-400 bg-teal-950/40 pulse-glow' : 'border-slate-700 bg-slate-900/40'}`;
+                    div.innerHTML = `
+                        <div class="text-xs text-slate-300 truncate font-semibold">${p.name}</div>
+                        <div class="text-lg font-extrabold text-teal-300">${p.score} đ</div>
+                    `;
+                    container.appendChild(div);
+                });
+                document.getElementById('current-participant-badge').innerText = participants[currentIndex].name;
+            }
+        }
+
+        function loadQuestion() {
+            const q = questions[currentQuestionIndex];
+            document.getElementById('current-q-num').innerText = currentQuestionIndex + 1;
+            const questionTextElement = document.getElementById('question-text');
+            questionTextElement.innerHTML = q.question;
+            typesetMath(questionTextElement);
+
+            const typeText = q.type === 'mcq' ? 'Trắc nghiệm 4 lựa chọn' : q.type === 'tf' ? 'Câu hỏi Đúng / Sai' : 'Câu hỏi Trả lời ngắn';
+            document.getElementById('question-badge').innerText = `${q.lesson} • Cấp độ: ${q.level} • ${typeText}`;
+
+            updateScoreboardMini();
+
+            const optionsContainer = document.getElementById('options-container');
+            optionsContainer.innerHTML = '';
+
+            if (q.type === 'mcq') {
+                const gridDiv = document.createElement('div');
+                gridDiv.className = 'grid grid-cols-1 md:grid-cols-2 gap-4';
+
+                let currentOptions = [...q.options].sort(() => Math.random() - 0.5);
+                const letters = ['A', 'B', 'C', 'D'];
+
+                currentOptions.forEach((opt, idx) => {
+                    const cleanText = opt.text.replace(/^[A-D]\.\s*/, '');
+                    const btn = document.createElement('button');
+                    btn.className = 'bg-slate-900/90 hover:bg-slate-700 border border-slate-700 hover:border-blue-500 p-4 rounded-xl text-left transition flex items-start space-x-3 group shadow';
+                    
+                    btn.innerHTML = `
+                        <span class="bg-slate-800 text-teal-400 font-bold px-2.5 py-1 rounded-lg text-sm shrink-0">${letters[idx]}</span>
+                        <span class="text-slate-100 font-medium text-sm md:text-base my-auto">${cleanText}</span>
+                    `;
+
+                    btn.onclick = () => selectAnswer(opt.isCorrect, q.rationale);
+                    gridDiv.appendChild(btn);
+                });
+                optionsContainer.appendChild(gridDiv);
+                typesetMath(optionsContainer);
+            } else if (q.type === 'tf') {
+                const gridDiv = document.createElement('div');
+                gridDiv.className = 'grid grid-cols-1 sm:grid-cols-2 gap-4 max-w-lg mx-auto pt-2';
+
+                const btnTrue = document.createElement('button');
+                btnTrue.className = 'bg-emerald-900/80 hover:bg-emerald-700 border border-emerald-500 p-5 rounded-2xl text-center font-bold text-xl transition shadow-lg flex items-center justify-center space-x-3';
+                btnTrue.innerHTML = `<i class="fa-solid fa-check text-2xl text-emerald-400"></i> <span>ĐÚNG</span>`;
+                btnTrue.onclick = () => selectAnswer(q.correctBool === true, q.rationale);
+
+                const btnFalse = document.createElement('button');
+                btnFalse.className = 'bg-red-900/80 hover:bg-red-700 border border-red-500 p-5 rounded-2xl text-center font-bold text-xl transition shadow-lg flex items-center justify-center space-x-3';
+                btnFalse.innerHTML = `<i class="fa-solid fa-xmark text-2xl text-red-400"></i> <span>SAI</span>`;
+                btnFalse.onclick = () => selectAnswer(q.correctBool === false, q.rationale);
+
+                gridDiv.appendChild(btnTrue);
+                gridDiv.appendChild(btnFalse);
+                optionsContainer.appendChild(gridDiv);
+            } else if (q.type === 'sa') {
+                const boxDiv = document.createElement('div');
+                boxDiv.className = 'max-w-md mx-auto space-y-4 pt-2 text-center';
+                boxDiv.innerHTML = `
+                    <div class="text-xs text-slate-400">Nhập đáp án (chữ số, từ khóa hoặc số thập phân) rồi nhấn Gửi:</div>
+                    <div class="flex space-x-2">
+                        <input id="sa-input" type="text" class="w-full bg-slate-900 border border-teal-500 rounded-xl px-4 py-3 text-white text-center font-bold text-lg focus:outline-none focus:ring-2 focus:ring-teal-400" placeholder="Nhập câu trả lời...">
+                        <button id="sa-submit-btn" class="bg-teal-600 hover:bg-teal-500 text-white font-bold px-6 py-3 rounded-xl shadow transition">Gửi</button>
+                    </div>
+                `;
+                optionsContainer.appendChild(boxDiv);
+                typesetMath(optionsContainer);
+
+                const inputEl = document.getElementById('sa-input');
+                const submitBtn = document.getElementById('sa-submit-btn');
+
+                const handleSaSubmit = () => {
+                    const userAns = inputEl.value.trim().toLowerCase().replace(/\s+/g, '').replace(',', '.');
+                    const acceptedAnswers = q.correctAnswer.split('|').map(answer => answer.trim().toLowerCase().replace(/\s+/g, '').replace(',', '.'));
+                    const isCorrect = acceptedAnswers.includes(userAns);
+                    selectAnswer(isCorrect, `${q.rationale} (Đáp án chuẩn: <b>${q.correctAnswer}</b>)`);
+                };
+
+                submitBtn.onclick = handleSaSubmit;
+                inputEl.addEventListener('keyup', (e) => {
+                    if (e.key === 'Enter') handleSaSubmit();
+                });
+                setTimeout(() => inputEl.focus(), 100);
+            }
+        }
+
+        function selectAnswer(isCorrect, rationaleText) {
+            document.getElementById('game-screen').classList.add('hidden');
+            const feedbackScreen = document.getElementById('feedback-screen');
+            feedbackScreen.classList.remove('hidden');
+
+            const title = document.getElementById('feedback-title');
+            const icon = document.getElementById('feedback-icon');
+            const rationale = document.getElementById('feedback-rationale');
+
+            if (isCorrect) {
+                playCorrectSound();
+                participants[currentIndex].score += 10;
+                participants[currentIndex].correctCount++;
+                icon.innerHTML = '<i class="fa-solid fa-circle-check text-emerald-400"></i>';
+                title.innerText = gameMode === 'single' ? "Chính Xác! (+10 điểm)" : `${participants[currentIndex].name} Trả Lời Chính Xác! (+10 điểm)`;
+                title.className = "text-2xl font-bold text-emerald-400";
+            } else {
+                playIncorrectSound();
+                if (gameMode === 'group') {
+                    participants[currentIndex].score = Math.max(0, participants[currentIndex].score - 5);
+                }
+                icon.innerHTML = '<i class="fa-solid fa-circle-xmark text-red-400"></i>';
+                title.innerText = gameMode === 'single' ? "Chưa Chính Xác!" : `${participants[currentIndex].name} Chưa Chính Xác! (-5 điểm)`;
+                title.className = "text-2xl font-bold text-red-400";
+            }
+
+            rationale.innerHTML = rationaleText;
+            typesetMath(rationale);
+        }
+
+        function nextQuestion() {
+            if (gameMode === 'group') {
+                currentIndex = (currentIndex + 1) % participants.length;
+            }
+            currentQuestionIndex++;
+
+            if (currentQuestionIndex < questions.length) {
+                document.getElementById('feedback-screen').classList.add('hidden');
+                document.getElementById('game-screen').classList.remove('hidden');
+                loadQuestion();
+            } else {
+                endGame();
+            }
+        }
+
+        function endGame() {
+            document.getElementById('feedback-screen').classList.add('hidden');
+            document.getElementById('end-screen').classList.remove('hidden');
+
+            const container = document.getElementById('final-scoreboard');
+            container.innerHTML = '';
+
+            if (gameMode === 'single') {
+                const student = participants[0];
+                document.getElementById('end-subtitle').innerText = `Học sinh: ${student.name}`;
+                
+                const score10 = ((student.correctCount / questions.length) * 10).toFixed(1);
+
+                const div = document.createElement('div');
+                div.className = 'bg-slate-900 border border-teal-500 p-6 rounded-2xl space-y-3 text-center';
+                div.innerHTML = `
+                    <div class="text-slate-400 text-sm">Tổng số câu đúng: <b class="text-white">${student.correctCount} / ${questions.length}</b></div>
+                    <div class="text-4xl font-extrabold text-teal-300">${score10} <span class="text-xl font-bold text-slate-300">/ 10 Điểm</span></div>
+                    <div class="text-xs text-slate-400 pt-2">${Number(score10) >= 8 ? '🌟 Xuất sắc! Bạn nắm rất vững kiến thức Bài 10 Quy tắc Octet.' : Number(score10) >= 5 ? '👍 Khá tốt! Hãy ôn luyện thêm các câu hỏi vận dụng chuyên sâu nhé.' : '📖 Cần cố gắng ôn lại lý thuyết Quy tắc Octet nhé!'}</div>
+                `;
+                container.appendChild(div);
+            } else {
+                document.getElementById('end-subtitle').innerText = "Trò chơi đã kết thúc! Tổng kết điểm số các đội chơi.";
+                const sortedList = [...participants].sort((a, b) => b.score - a.score);
+                sortedList.forEach((p, idx) => {
+                    const div = document.createElement('div');
+                    div.className = `flex justify-between items-center p-4 rounded-xl border ${idx === 0 ? 'bg-amber-500/20 border-amber-400 text-amber-300 font-bold' : 'bg-slate-900 border-slate-700 text-white'}`;
+                    div.innerHTML = `
+                        <div class="flex items-center space-x-3">
+                            <span class="w-8 h-8 rounded-full flex items-center justify-center font-bold ${idx === 0 ? 'bg-amber-500 text-slate-950' : 'bg-slate-800 text-slate-300'}">${idx + 1}</span>
+                            <span>${p.name}</span>
+                        </div>
+                        <span class="text-xl font-extrabold">${p.score} điểm</span>
+                    `;
+                    container.appendChild(div);
+                });
+            }
+
+            confetti({
+                particleCount: 160,
+                spread: 85,
+                origin: { y: 0.6 }
+            });
+        }
+
+        function restartGame() {
+            document.getElementById('end-screen').classList.add('hidden');
+            document.getElementById('setup-screen').classList.remove('hidden');
+        }
+    </script>
+</body>
+</html>
